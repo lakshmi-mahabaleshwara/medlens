@@ -1,0 +1,8 @@
+person,visit,day,analyte,reading,unit,kind
+p1,v1,01/01/2020,A1,7.1,pct,N
+p1,v2,01/02/2021,A1,7.3,pct,N
+p1,v2,01/02/2021,A1,7.3,pct,N
+p2,v3,02/06/2020,A1,bad,pct,N
+p2,v3,02/06/2020,A1,8.1,unknown,N
+p2,v3,02/06/2020,comment,negative,,T
+p9,v9,invalid,A1,9,pct,N

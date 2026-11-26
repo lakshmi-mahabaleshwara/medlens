@@ -1,0 +1,132 @@
+mappings:
+  patient:
+    source: people
+    entity: patient
+    version: '1'
+    fields:
+      patient_id:
+        op: namespace
+        field: person
+        namespace: patient
+      native_id:
+        op: field
+        field: person
+      birth_date:
+        op: cast
+        field: born
+        kind: date
+      death_date:
+        op: literal
+        value: null
+      gender:
+        op: literal
+        value: null
+      race:
+        op: literal
+        value: null
+      ethnicity:
+        op: literal
+        value: null
+  encounter:
+    source: visits
+    entity: encounter
+    version: '1'
+    fields:
+      encounter_id:
+        op: namespace
+        field: visit
+        namespace: encounter
+      patient_id:
+        op: namespace
+        field: person
+        namespace: patient
+      start:
+        op: timestamp
+        field: opened
+      end:
+        op: timestamp
+        field: closed
+      precision:
+        op: precision
+        field: opened
+      encounter_class:
+        op: literal
+        value: null
+      code:
+        op: literal
+        value: null
+      display:
+        op: literal
+        value: null
+      reason_code:
+        op: literal
+        value: null
+      reason_display:
+        op: literal
+        value: null
+  observation:
+    source: labs
+    entity: observation
+    version: '1'
+    fields:
+      event_id:
+        op: field
+        field: _record_id
+      patient_id:
+        op: namespace
+        field: person
+        namespace: patient
+      encounter_id:
+        op: namespace
+        field: visit
+        namespace: encounter
+      observed:
+        op: timestamp
+        field: day
+        format: dd/MM/yyyy
+      precision:
+        op: literal
+        value: date
+      code:
+        op: field
+        field: analyte
+      system:
+        op: literal
+        value: null
+      display:
+        op: literal
+        value: null
+      category:
+        op: literal
+        value: null
+      raw_value:
+        op: field
+        field: reading
+      raw_type:
+        op: field
+        field: kind
+      unit:
+        op: field
+        field: unit
+      numeric_value:
+        op: when
+        predicate: kind
+        equals: N
+        then:
+          op: cast
+          field: reading
+          kind: double
+      categorical_value:
+        op: when
+        predicate: kind
+        equals: T
+        then:
+          op: field
+          field: reading
+      concept:
+        op: values
+        field: analyte
+        values:
+          A1: hba1c
+          SYS: systolic
+          DIA: diastolic

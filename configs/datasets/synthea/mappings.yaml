@@ -1,0 +1,259 @@
+mappings:
+  patient:
+    source: patients
+    entity: patient
+    version: '1'
+    fields:
+      patient_id:
+        op: namespace
+        field: Id
+        namespace: patient
+      native_id:
+        op: field
+        field: Id
+      birth_date:
+        op: cast
+        field: BIRTHDATE
+        kind: date
+      death_date:
+        op: cast
+        field: DEATHDATE
+        kind: date
+      gender:
+        op: field
+        field: GENDER
+      race:
+        op: field
+        field: RACE
+      ethnicity:
+        op: field
+        field: ETHNICITY
+  encounter:
+    source: encounters
+    entity: encounter
+    version: '1'
+    fields:
+      encounter_id:
+        op: namespace
+        field: Id
+        namespace: encounter
+      patient_id:
+        op: namespace
+        field: PATIENT
+        namespace: patient
+      start:
+        op: timestamp
+        field: START
+      end:
+        op: timestamp
+        field: STOP
+      precision:
+        op: precision
+        field: START
+      encounter_class:
+        op: field
+        field: ENCOUNTERCLASS
+      code:
+        op: field
+        field: CODE
+      display:
+        op: field
+        field: DESCRIPTION
+      reason_code:
+        op: field
+        field: REASONCODE
+      reason_display:
+        op: field
+        field: REASONDESCRIPTION
+  observation:
+    source: observations
+    entity: observation
+    version: '1'
+    fields:
+      event_id:
+        op: field
+        field: _record_id
+      patient_id:
+        op: namespace
+        field: PATIENT
+        namespace: patient
+      encounter_id:
+        op: namespace
+        field: ENCOUNTER
+        namespace: encounter
+      observed:
+        op: timestamp
+        field: DATE
+      precision:
+        op: precision
+        field: DATE
+      code:
+        op: field
+        field: CODE
+      system:
+        op: literal
+        value: null
+      display:
+        op: field
+        field: DESCRIPTION
+      category:
+        op: field
+        field: CATEGORY
+      raw_value:
+        op: field
+        field: VALUE
+      raw_type:
+        op: field
+        field: TYPE
+      unit:
+        op: field
+        field: UNITS
+      numeric_value:
+        op: when
+        predicate: TYPE
+        equals: numeric
+        then:
+          op: cast
+          field: VALUE
+          kind: double
+      categorical_value:
+        op: when
+        predicate: TYPE
+        equals: text
+        then:
+          op: field
+          field: VALUE
+      concept:
+        op: values
+        field: CODE
+        values:
+          4548-4: hba1c
+          8480-6: systolic
+          8462-4: diastolic
+  condition:
+    source: conditions
+    entity: condition
+    version: '1'
+    fields:
+      event_id:
+        op: field
+        field: _record_id
+      patient_id:
+        op: namespace
+        field: PATIENT
+        namespace: patient
+      encounter_id:
+        op: namespace
+        field: ENCOUNTER
+        namespace: encounter
+      start:
+        op: timestamp
+        field: START
+      end:
+        op: timestamp
+        field: STOP
+      precision:
+        op: precision
+        field: START
+      code:
+        op: field
+        field: CODE
+      system:
+        op: field
+        field: SYSTEM
+      display:
+        op: field
+        field: DESCRIPTION
+  medication:
+    source: medications
+    entity: medication
+    version: '1'
+    fields:
+      event_id:
+        op: field
+        field: _record_id
+      patient_id:
+        op: namespace
+        field: PATIENT
+        namespace: patient
+      encounter_id:
+        op: namespace
+        field: ENCOUNTER
+        namespace: encounter
+      start:
+        op: timestamp
+        field: START
+      end:
+        op: timestamp
+        field: STOP
+      precision:
+        op: precision
+        field: START
+      code:
+        op: field
+        field: CODE
+      system:
+        op: literal
+        value: null
+      display:
+        op: field
+        field: DESCRIPTION
+      reason_code:
+        op: field
+        field: REASONCODE
+      reason_display:
+        op: field
+        field: REASONDESCRIPTION
+      dispenses:
+        op: cast
+        field: DISPENSES
+        kind: long
+  allergy:
+    source: allergies
+    entity: allergy
+    version: '1'
+    fields:
+      event_id:
+        op: field
+        field: _record_id
+      patient_id:
+        op: namespace
+        field: PATIENT
+        namespace: patient
+      encounter_id:
+        op: namespace
+        field: ENCOUNTER
+        namespace: encounter
+      start:
+        op: timestamp
+        field: START
+      end:
+        op: timestamp
+        field: STOP
+      precision:
+        op: precision
+        field: START
+      code:
+        op: field
+        field: CODE
+      system:
+        op: field
+        field: SYSTEM
+      display:
+        op: field
+        field: DESCRIPTION
+      category:
+        op: field
+        field: CATEGORY
+      allergy_type:
+        op: field
+        field: TYPE
+      reactions:
+        op: reactions
+        groups:
+        - code: REACTION1
+          description: DESCRIPTION1
+          severity: SEVERITY1
+        - code: REACTION2
+          description: DESCRIPTION2
+          severity: SEVERITY2

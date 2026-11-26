@@ -1,0 +1,220 @@
+stages:
+  ingest_patients:
+    op: ingest
+    subject: patients
+    inputs: []
+    output: patients
+  profile_patients:
+    op: profile
+    subject: patients
+    inputs:
+    - patients
+    output: profile_patients
+  validate_patients:
+    op: validate
+    subject: patients
+    inputs:
+    - patients
+    output: issues_patients
+  map_patient:
+    op: map
+    subject: patient
+    quality_inputs: [issues_patients]
+    inputs:
+    - patients
+    - issues_patients
+    output: patient
+  validate_patient:
+    op: validate
+    subject: patient
+    inputs:
+    - patient
+    output: issues_patient
+  ingest_encounters:
+    op: ingest
+    subject: encounters
+    inputs: []
+    output: encounters
+  profile_encounters:
+    op: profile
+    subject: encounters
+    inputs:
+    - encounters
+    output: profile_encounters
+  validate_encounters:
+    op: validate
+    subject: encounters
+    inputs:
+    - encounters
+    - patients
+    output: issues_encounters
+  map_encounter:
+    op: map
+    subject: encounter
+    quality_inputs: [issues_encounters]
+    inputs:
+    - encounters
+    - issues_encounters
+    output: encounter
+  validate_encounter:
+    op: validate
+    subject: encounter
+    inputs:
+    - encounter
+    output: issues_encounter
+  ingest_observations:
+    op: ingest
+    subject: observations
+    inputs: []
+    output: observations
+  profile_observations:
+    op: profile
+    subject: observations
+    inputs:
+    - observations
+    output: profile_observations
+  validate_observations:
+    op: validate
+    subject: observations
+    inputs:
+    - observations
+    - patients
+    - encounters
+    output: issues_observations
+  map_observation:
+    op: map
+    subject: observation
+    quality_inputs: [issues_observations]
+    inputs:
+    - observations
+    - issues_observations
+    output: observation
+  validate_observation:
+    op: validate
+    subject: observation
+    inputs:
+    - observation
+    output: issues_observation
+  ingest_conditions:
+    op: ingest
+    subject: conditions
+    inputs: []
+    output: conditions
+  profile_conditions:
+    op: profile
+    subject: conditions
+    inputs:
+    - conditions
+    output: profile_conditions
+  validate_conditions:
+    op: validate
+    subject: conditions
+    inputs:
+    - conditions
+    - patients
+    - encounters
+    output: issues_conditions
+  map_condition:
+    op: map
+    subject: condition
+    quality_inputs: [issues_conditions]
+    inputs:
+    - conditions
+    - issues_conditions
+    output: condition
+  validate_condition:
+    op: validate
+    subject: condition
+    inputs:
+    - condition
+    output: issues_condition
+  ingest_medications:
+    op: ingest
+    subject: medications
+    inputs: []
+    output: medications
+  profile_medications:
+    op: profile
+    subject: medications
+    inputs:
+    - medications
+    output: profile_medications
+  validate_medications:
+    op: validate
+    subject: medications
+    inputs:
+    - medications
+    - patients
+    - encounters
+    output: issues_medications
+  map_medication:
+    op: map
+    subject: medication
+    quality_inputs: [issues_medications]
+    inputs:
+    - medications
+    - issues_medications
+    output: medication
+  validate_medication:
+    op: validate
+    subject: medication
+    inputs:
+    - medication
+    output: issues_medication
+  ingest_allergies:
+    op: ingest
+    subject: allergies
+    inputs: []
+    output: allergies
+  profile_allergies:
+    op: profile
+    subject: allergies
+    inputs:
+    - allergies
+    output: profile_allergies
+  validate_allergies:
+    op: validate
+    subject: allergies
+    inputs:
+    - allergies
+    - patients
+    - encounters
+    output: issues_allergies
+  map_allergy:
+    op: map
+    subject: allergy
+    quality_inputs: [issues_allergies]
+    inputs:
+    - allergies
+    - issues_allergies
+    output: allergy
+  validate_allergy:
+    op: validate
+    subject: allergy
+    inputs:
+    - allergy
+    output: issues_allergy
+  assess:
+    op: readiness
+    subject: patient
+    quality_inputs: [issues_patients, issues_patient, issues_encounters, issues_encounter, issues_observations, issues_observation, issues_conditions, issues_condition, issues_medications, issues_medication, issues_allergies, issues_allergy]
+    inputs:
+    - patient
+    - encounter
+    - observation
+    - condition
+    - medication
+    - allergy
+    - issues_patients
+    - issues_patient
+    - issues_encounters
+    - issues_encounter
+    - issues_observations
+    - issues_observation
+    - issues_conditions
+    - issues_condition
+    - issues_medications
+    - issues_medication
+    - issues_allergies
+    - issues_allergy
+    output: readiness

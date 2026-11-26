@@ -1,0 +1,112 @@
+stages:
+  ingest_people:
+    op: ingest
+    subject: people
+    inputs: []
+    output: people
+  profile_people:
+    op: profile
+    subject: people
+    inputs:
+    - people
+    output: profile_people
+  validate_people:
+    op: validate
+    subject: people
+    inputs:
+    - people
+    output: issues_people
+  map_patient:
+    op: map
+    subject: patient
+    quality_inputs: [issues_people]
+    inputs:
+    - people
+    - issues_people
+    output: patient
+  validate_patient:
+    op: validate
+    subject: patient
+    inputs:
+    - patient
+    output: issues_patient
+  ingest_visits:
+    op: ingest
+    subject: visits
+    inputs: []
+    output: visits
+  profile_visits:
+    op: profile
+    subject: visits
+    inputs:
+    - visits
+    output: profile_visits
+  validate_visits:
+    op: validate
+    subject: visits
+    inputs:
+    - visits
+    - people
+    output: issues_visits
+  map_encounter:
+    op: map
+    subject: encounter
+    quality_inputs: [issues_visits]
+    inputs:
+    - visits
+    - issues_visits
+    output: encounter
+  validate_encounter:
+    op: validate
+    subject: encounter
+    inputs:
+    - encounter
+    output: issues_encounter
+  ingest_labs:
+    op: ingest
+    subject: labs
+    inputs: []
+    output: labs
+  profile_labs:
+    op: profile
+    subject: labs
+    inputs:
+    - labs
+    output: profile_labs
+  validate_labs:
+    op: validate
+    subject: labs
+    inputs:
+    - labs
+    - people
+    - visits
+    output: issues_labs
+  map_observation:
+    op: map
+    subject: observation
+    quality_inputs: [issues_labs]
+    inputs:
+    - labs
+    - issues_labs
+    output: observation
+  validate_observation:
+    op: validate
+    subject: observation
+    inputs:
+    - observation
+    output: issues_observation
+  assess:
+    op: readiness
+    subject: patient
+    quality_inputs: [issues_people, issues_patient, issues_visits, issues_encounter, issues_labs, issues_observation]
+    inputs:
+    - patient
+    - encounter
+    - observation
+    - issues_people
+    - issues_patient
+    - issues_visits
+    - issues_encounter
+    - issues_labs
+    - issues_observation
+    output: readiness

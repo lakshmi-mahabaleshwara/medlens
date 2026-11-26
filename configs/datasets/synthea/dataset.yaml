@@ -1,0 +1,158 @@
+dataset: synthea
+version: delivery-1
+raw: data/raw/synthea/csv
+sources:
+  patients:
+    files:
+    - patients.csv
+    columns:
+    - Id
+    - BIRTHDATE
+    - DEATHDATE
+    - SSN
+    - DRIVERS
+    - PASSPORT
+    - PREFIX
+    - FIRST
+    - MIDDLE
+    - LAST
+    - SUFFIX
+    - MAIDEN
+    - MARITAL
+    - RACE
+    - ETHNICITY
+    - GENDER
+    - BIRTHPLACE
+    - ADDRESS
+    - CITY
+    - STATE
+    - COUNTY
+    - FIPS
+    - ZIP
+    - LAT
+    - LON
+    - HEALTHCARE_EXPENSES
+    - HEALTHCARE_COVERAGE
+    - INCOME
+    types:
+      BIRTHDATE: date
+    roles:
+      patient: Id
+      entity: Id
+    primary_key:
+    - Id
+  encounters:
+    files:
+    - encounters.csv
+    columns:
+    - Id
+    - START
+    - STOP
+    - PATIENT
+    - ORGANIZATION
+    - PROVIDER
+    - PAYER
+    - ENCOUNTERCLASS
+    - CODE
+    - DESCRIPTION
+    - BASE_ENCOUNTER_COST
+    - TOTAL_CLAIM_COST
+    - PAYER_COVERAGE
+    - REASONCODE
+    - REASONDESCRIPTION
+    types:
+      START: timestamp
+      STOP: timestamp
+    roles:
+      patient: PATIENT
+      entity: Id
+    primary_key:
+    - Id
+  observations:
+    files:
+    - observations.csv
+    columns:
+    - DATE
+    - PATIENT
+    - ENCOUNTER
+    - CATEGORY
+    - CODE
+    - DESCRIPTION
+    - VALUE
+    - UNITS
+    - TYPE
+    types:
+      DATE: timestamp
+    roles:
+      patient: PATIENT
+      code: CODE
+      unit: UNITS
+    primary_key: []
+    numeric_when:
+      VALUE:
+        TYPE: numeric
+  conditions:
+    files:
+    - conditions.csv
+    columns:
+    - START
+    - STOP
+    - PATIENT
+    - ENCOUNTER
+    - SYSTEM
+    - CODE
+    - DESCRIPTION
+    types:
+      START: timestamp
+      STOP: timestamp
+    roles:
+      patient: PATIENT
+    primary_key: []
+  medications:
+    files:
+    - medications.csv
+    columns:
+    - START
+    - STOP
+    - PATIENT
+    - PAYER
+    - ENCOUNTER
+    - CODE
+    - DESCRIPTION
+    - BASE_COST
+    - PAYER_COVERAGE
+    - DISPENSES
+    - TOTALCOST
+    - REASONCODE
+    - REASONDESCRIPTION
+    types:
+      START: timestamp
+      STOP: timestamp
+    roles:
+      patient: PATIENT
+    primary_key: []
+  allergies:
+    files:
+    - allergies.csv
+    columns:
+    - START
+    - STOP
+    - PATIENT
+    - ENCOUNTER
+    - CODE
+    - SYSTEM
+    - DESCRIPTION
+    - TYPE
+    - CATEGORY
+    - REACTION1
+    - DESCRIPTION1
+    - SEVERITY1
+    - REACTION2
+    - DESCRIPTION2
+    - SEVERITY2
+    types:
+      START: timestamp
+      STOP: timestamp
+    roles:
+      patient: PATIENT
+    primary_key: []

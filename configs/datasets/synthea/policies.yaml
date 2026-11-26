@@ -1,0 +1,425 @@
+rules:
+  patients:
+    native_key:
+      op: unique
+      field: Id
+      message: Repeated native identifier
+    missing_key:
+      op: required
+      field: Id
+      message: Missing native identifier
+    duplicate_payload:
+      op: duplicate
+      field: Id
+      message: Repeated source payload
+      classification: potential_anomaly
+      severity: warning
+  patient:
+    identity:
+      op: required
+      field: patient_id
+      message: Canonical identity unavailable
+  encounters:
+    native_key:
+      op: unique
+      field: Id
+      message: Repeated native identifier
+    missing_key:
+      op: required
+      field: Id
+      message: Missing native identifier
+    duplicate_payload:
+      op: duplicate
+      field: Id
+      message: Repeated source payload
+      classification: potential_anomaly
+      severity: warning
+    patient_reference:
+      op: reference
+      field: PATIENT
+      message: Reference must resolve to exactly one registered record
+      reference: patients
+      other: Id
+    event_time:
+      op: timestamp
+      field: START
+      message: Invalid start time
+    event_order:
+      op: ordered
+      field: START
+      message: End precedes start
+      other: STOP
+  encounter:
+    identity:
+      op: required
+      field: encounter_id
+      message: Canonical identity unavailable
+  observations:
+    duplicate_payload:
+      op: duplicate
+      field: DATE
+      message: Repeated source payload
+      classification: potential_anomaly
+      severity: warning
+    patient_reference:
+      op: reference
+      field: PATIENT
+      message: Reference must resolve to exactly one registered record
+      reference: patients
+      other: Id
+    encounter_reference:
+      op: reference
+      field: ENCOUNTER
+      message: Encounter must resolve uniquely and belong to the same patient
+      reference: encounters
+      other: Id
+      version: "2"
+      match_fields: {PATIENT: PATIENT}
+    numeric_parse:
+      op: numeric
+      field: VALUE
+      message: Expected finite numeric measurement
+      where:
+        TYPE: numeric
+    a1_unit:
+      op: units
+      field: UNITS
+      message: Unit outside configured concept contract
+      where:
+        CODE: 4548-4
+      allowed:
+      - '%'
+    systolic_unit:
+      op: units
+      field: UNITS
+      message: Unit outside configured concept contract
+      where:
+        CODE: 8480-6
+      allowed:
+      - mm[Hg]
+    diastolic_unit:
+      op: units
+      field: UNITS
+      message: Unit outside configured concept contract
+      where:
+        CODE: 8462-4
+      allowed:
+      - mm[Hg]
+    event_time:
+      op: timestamp
+      field: DATE
+      message: Invalid observation time
+  observation:
+    identity:
+      op: required
+      field: event_id
+      message: Canonical identity unavailable
+    observed_time:
+      op: required
+      field: observed
+      message: Valid observation time required
+  conditions:
+    duplicate_payload:
+      op: duplicate
+      field: START
+      message: Repeated source payload
+      classification: potential_anomaly
+      severity: warning
+    patient_reference:
+      op: reference
+      field: PATIENT
+      message: Reference must resolve to exactly one registered record
+      reference: patients
+      other: Id
+    encounter_reference:
+      op: reference
+      field: ENCOUNTER
+      message: Encounter must resolve uniquely and belong to the same patient
+      reference: encounters
+      other: Id
+      version: "2"
+      match_fields: {PATIENT: PATIENT}
+    event_time:
+      op: timestamp
+      field: START
+      message: Invalid start time
+    event_order:
+      op: ordered
+      field: START
+      message: End precedes start
+      other: STOP
+    open_interval:
+      op: required
+      field: STOP
+      message: Open interval permitted
+      severity: info
+      classification: expected_missingness
+  condition:
+    identity:
+      op: required
+      field: event_id
+      message: Canonical identity unavailable
+  medications:
+    duplicate_payload:
+      op: duplicate
+      field: START
+      message: Repeated source payload
+      classification: potential_anomaly
+      severity: warning
+    patient_reference:
+      op: reference
+      field: PATIENT
+      message: Reference must resolve to exactly one registered record
+      reference: patients
+      other: Id
+    encounter_reference:
+      op: reference
+      field: ENCOUNTER
+      message: Encounter must resolve uniquely and belong to the same patient
+      reference: encounters
+      other: Id
+      version: "2"
+      match_fields: {PATIENT: PATIENT}
+    event_time:
+      op: timestamp
+      field: START
+      message: Invalid start time
+    event_order:
+      op: ordered
+      field: START
+      message: End precedes start
+      other: STOP
+  medication:
+    identity:
+      op: required
+      field: event_id
+      message: Canonical identity unavailable
+  allergies:
+    duplicate_payload:
+      op: duplicate
+      field: START
+      message: Repeated source payload
+      classification: potential_anomaly
+      severity: warning
+    patient_reference:
+      op: reference
+      field: PATIENT
+      message: Reference must resolve to exactly one registered record
+      reference: patients
+      other: Id
+    encounter_reference:
+      op: reference
+      field: ENCOUNTER
+      message: Encounter must resolve uniquely and belong to the same patient
+      reference: encounters
+      other: Id
+      version: "2"
+      match_fields: {PATIENT: PATIENT}
+    event_time:
+      op: timestamp
+      field: START
+      message: Invalid start time
+    event_order:
+      op: ordered
+      field: START
+      message: End precedes start
+      other: STOP
+  allergy:
+    identity:
+      op: required
+      field: event_id
+      message: Canonical identity unavailable
+criteria:
+  hba1c:
+    uncertain_fields: [concept]
+    entity: observation
+    patient_field: patient_id
+    strategy: distinct_dates
+    threshold: 1
+    date_field: observed
+    filter:
+      concept:
+      - hba1c
+      unit:
+      - '%'
+    numeric_field: numeric_value
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  hba1c_trend:
+    uncertain_fields: [concept]
+    entity: observation
+    patient_field: patient_id
+    strategy: distinct_dates
+    threshold: 2
+    date_field: observed
+    filter:
+      concept:
+      - hba1c
+      unit:
+      - '%'
+    numeric_field: numeric_value
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  systolic:
+    uncertain_fields: [concept]
+    entity: observation
+    patient_field: patient_id
+    strategy: distinct_dates
+    threshold: 2
+    date_field: observed
+    filter:
+      unit:
+      - mm[Hg]
+      concept:
+      - systolic
+    numeric_field: numeric_value
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  diastolic:
+    uncertain_fields: [concept]
+    entity: observation
+    patient_field: patient_id
+    strategy: distinct_dates
+    threshold: 2
+    date_field: observed
+    filter:
+      unit:
+      - mm[Hg]
+      concept:
+      - diastolic
+    numeric_field: numeric_value
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  bp_pairs:
+    uncertain_fields: [concept]
+    entity: observation
+    patient_field: patient_id
+    strategy: paired_dates
+    threshold: 2
+    pair_field: concept
+    pair_values:
+    - systolic
+    - diastolic
+    pair_keys:
+    - encounter_id
+    date_field: observed
+    filter:
+      unit:
+      - mm[Hg]
+    numeric_field: numeric_value
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  encounters:
+    entity: encounter
+    patient_field: patient_id
+    strategy: count
+    threshold: 2
+    distinct_field: encounter_id
+    exclude_rules:
+    - event_order
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  history:
+    entity: encounter
+    patient_field: patient_id
+    strategy: span_days
+    threshold: 365
+    date_field: start
+    exclude_rules:
+    - event_order
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  medications:
+    entity: medication
+    patient_field: patient_id
+    strategy: count
+    threshold: 1
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  diabetes:
+    uncertain_fields: [system, code]
+    entity: condition
+    patient_field: patient_id
+    strategy: count
+    threshold: 1
+    filter:
+      system:
+      - SNOMED-CT
+      code:
+      - '44054006'
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+  hypertension:
+    uncertain_fields: [system, code]
+    entity: condition
+    patient_field: patient_id
+    strategy: count
+    threshold: 1
+    filter:
+      system:
+      - SNOMED-CT
+      code:
+      - '59621000'
+    exclude_rules:
+    - patient_reference
+    - encounter_reference
+    - missing_key
+    - native_key
+tasks:
+  hba1c:
+  - hba1c
+  hba1c_trend:
+  - hba1c_trend
+  systolic:
+  - systolic
+  diastolic:
+  - diastolic
+  bp_pairs:
+  - bp_pairs
+  encounters:
+  - encounters
+  history:
+  - history
+  medications:
+  - medications
+  diabetes:
+  - diabetes
+  hypertension:
+  - hypertension
+  diabetes_followup:
+  - diabetes
+  - hba1c_trend
+  hypertension_followup:
+  - hypertension
+  - bp_pairs
+concepts:
+  observation:
+    scope: dataset-local
+    version: '1'
+    rationale: Explicit source code, value type and unit agreement within this delivery.
+      Cross-dataset equivalence is unreviewed.

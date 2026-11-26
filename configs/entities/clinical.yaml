@@ -1,0 +1,116 @@
+entities:
+  patient:
+    version: '1'
+    fields:
+      patient_id: string
+      native_id: string
+      birth_date: date
+      death_date: date
+      gender: string
+      race: string
+      ethnicity: string
+    field_order: [patient_id, native_id, birth_date, death_date, gender, race, ethnicity]
+    key: patient_id
+    roles:
+      entity: patient_id
+      patient: patient_id
+  encounter:
+    version: '1'
+    fields:
+      encounter_id: string
+      patient_id: string
+      start: timestamp
+      end: timestamp
+      precision: string
+      encounter_class: string
+      code: string
+      display: string
+      reason_code: string
+      reason_display: string
+    field_order: [encounter_id, patient_id, start, end, precision, encounter_class, code, display, reason_code, reason_display]
+    key: encounter_id
+    roles:
+      entity: encounter_id
+      patient: patient_id
+  observation:
+    version: '1'
+    fields:
+      event_id: string
+      patient_id: string
+      encounter_id: string
+      observed: timestamp
+      precision: string
+      code: string
+      system: string
+      display: string
+      category: string
+      raw_value: string
+      raw_type: string
+      unit: string
+      numeric_value: double
+      categorical_value: string
+      concept: string
+    field_order: [event_id, patient_id, encounter_id, observed, precision, code, system, display, category, raw_value, raw_type, unit, numeric_value, categorical_value, concept]
+    key: event_id
+    roles:
+      entity: event_id
+      patient: patient_id
+      code: code
+      unit: unit
+  condition:
+    version: '1'
+    fields:
+      event_id: string
+      patient_id: string
+      encounter_id: string
+      start: timestamp
+      end: timestamp
+      precision: string
+      code: string
+      system: string
+      display: string
+    field_order: [event_id, patient_id, encounter_id, start, end, precision, code, system, display]
+    key: event_id
+    roles:
+      entity: event_id
+      patient: patient_id
+  medication:
+    version: '1'
+    fields:
+      event_id: string
+      patient_id: string
+      encounter_id: string
+      start: timestamp
+      end: timestamp
+      precision: string
+      code: string
+      system: string
+      display: string
+      reason_code: string
+      reason_display: string
+      dispenses: long
+    field_order: [event_id, patient_id, encounter_id, start, end, precision, code, system, display, reason_code, reason_display, dispenses]
+    key: event_id
+    roles:
+      entity: event_id
+      patient: patient_id
+  allergy:
+    version: '1'
+    fields:
+      event_id: string
+      patient_id: string
+      encounter_id: string
+      start: timestamp
+      end: timestamp
+      precision: string
+      code: string
+      system: string
+      display: string
+      category: string
+      allergy_type: string
+      reactions: reactions
+    field_order: [event_id, patient_id, encounter_id, start, end, precision, code, system, display, category, allergy_type, reactions]
+    key: event_id
+    roles:
+      entity: event_id
+      patient: patient_id

@@ -1,0 +1,30 @@
+services:
+  lab:
+    image: ${MEDLENS_LAB_IMAGE:-medlens-lab}
+    build:
+      context: .
+      args:
+        MEDLENS_BUILD_REVISION: ${MEDLENS_BUILD_REVISION:-}
+        MEDLENS_BUILD_STATE: ${MEDLENS_BUILD_STATE:-unknown}
+    ports:
+      - "127.0.0.1:${MEDLENS_PORT:-8891}:8888"
+    volumes:
+      - writer-locks:/var/lock/medlens
+      - ./data/raw:/work/data/raw:ro
+      - ./data/delta:/work/data/delta
+      - ./outputs:/work/outputs
+      - ./notebooks:/work/notebooks
+      - ./configs:/work/configs:ro
+    environment:
+      MEDLENS_IMAGE_ID: ${MEDLENS_IMAGE_ID:-}
+      MEDLENS_LOCK_DIR: /var/lock/medlens
+      MEDLENS_DATASET: ${MEDLENS_DATASET:-synthea}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/login')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  writer-locks:
+    name: medlens-local-writer-locks

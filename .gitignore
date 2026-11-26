@@ -1,0 +1,10 @@
+data/raw/
+data/delta/
+outputs/
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+/docs/

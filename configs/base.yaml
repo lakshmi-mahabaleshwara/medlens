@@ -1,0 +1,23 @@
+config_version: '1'
+storage: data/delta
+outputs: outputs
+spark:
+  cores: 2
+  memory_gb: 3
+  partitions: 2
+metrics:
+- rows
+- columns
+- distinct
+- missing
+- distribution
+- duplicates
+- frequency
+- patient_counts
+- entity_counts
+- patient_distribution
+population: patient
+patient_key: patient_id
+export_profiles: false
+public_rule_messages:
+- Missing date

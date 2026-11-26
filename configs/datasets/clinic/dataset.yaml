@@ -1,0 +1,53 @@
+dataset: clinic
+version: delivery-1
+raw: tests/fixtures/clinic
+sources:
+  people:
+    files:
+    - people.csv
+    columns:
+    - person
+    - born
+    types:
+      born: date
+    roles:
+      patient: person
+      entity: person
+    primary_key:
+    - person
+  visits:
+    files:
+    - visits.csv
+    columns:
+    - visit
+    - person
+    - opened
+    - closed
+    types:
+      opened: timestamp
+      closed: timestamp
+    roles:
+      patient: person
+      entity: visit
+    primary_key:
+    - visit
+  labs:
+    files:
+    - labs.csv
+    columns:
+    - person
+    - visit
+    - day
+    - analyte
+    - reading
+    - unit
+    - kind
+    types: {}
+    roles:
+      patient: person
+      code: analyte
+      unit: unit
+    primary_key: []
+    numeric_when:
+      reading:
+        kind: N

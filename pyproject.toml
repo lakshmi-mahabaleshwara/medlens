@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "medlens"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "pyspark==4.0.1", "delta-spark==4.0.1", "pydantic==2.11.7",
+  "PyYAML==6.0.2", "matplotlib==3.10.5", "jupyterlab==4.4.6",
+  "pytest==8.4.1", "nbconvert==7.16.6", "ipykernel==6.30.1"
+]
+
+[project.scripts]
+medlens = "medlens.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,23 @@
+#!/bin/sh
+# Capture build provenance outside Docker, where the checkout is available.
+set -eu
+cd "$(dirname "$0")/.."
+case "${1:-}" in
+    ""|--release) ;;
+    *) echo "Usage: scripts/start-lab [--release]" >&2; exit 2 ;;
+esac
+MEDLENS_BUILD_REVISION=$(git rev-parse --verify HEAD 2>/dev/null || true)
+changes=$(git status --porcelain --untracked-files=normal)
+MEDLENS_BUILD_STATE=clean
+if [ -n "$changes" ]; then MEDLENS_BUILD_STATE=dirty; fi
+if [ "${1:-}" = --release ] && { [ -z "$MEDLENS_BUILD_REVISION" ] || [ "$MEDLENS_BUILD_STATE" != clean ]; }; then
+    echo "A release build requires a committed, clean checkout." >&2
+    exit 1
+fi
+export MEDLENS_BUILD_REVISION MEDLENS_BUILD_STATE
+MEDLENS_LAB_IMAGE=${MEDLENS_LAB_IMAGE:-medlens-lab}
+export MEDLENS_LAB_IMAGE
+docker compose build lab
+MEDLENS_IMAGE_ID=$(docker image inspect --format '{{.Id}}' "$MEDLENS_LAB_IMAGE")
+export MEDLENS_IMAGE_ID
+docker compose up -d --no-build --pull never lab
